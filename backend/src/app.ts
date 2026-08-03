@@ -3,10 +3,11 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import { requestId } from "./middleware/request-id.js";
-import { errorHandler } from "./middleware/error-handler.js";
-import { notFound } from "./middleware/not-found.js";
-import { ApiResponse } from "./utils/api-response.js";
+import routes from "./routes";
+import { requestId } from "./middleware/request-id";
+import { errorHandler } from "./middleware/error-handler";
+import { notFound } from "./middleware/not-found";
+import { ApiResponse } from "./utils/api-response";
 
 const app = express();
 
@@ -30,14 +31,10 @@ app.get("/", (_req, res) => {
   );
 });
 
-/*
- * 404
- */
+app.use("/api/v1", routes);
+
 app.use(notFound);
 
-/*
- * Global Error Handler
- */
 app.use(errorHandler);
 
 export default app;
