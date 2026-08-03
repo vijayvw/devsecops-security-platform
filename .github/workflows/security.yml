@@ -183,7 +183,7 @@ jobs:
           docker build -t devsecops-backend ./backend
 
       - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.32.0
         with:
           image-ref: devsecops-backend
           format: sarif
