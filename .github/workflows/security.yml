@@ -19,6 +19,7 @@ jobs:
 
     permissions:
       contents: read
+      security-events: write
 
     steps:
       - name: Checkout Repository
@@ -120,3 +121,37 @@ jobs:
           name: checkov-report
           path: checkov.sarif
           if-no-files-found: ignore                            
+  trivy:
+    name: Trivy Container Scan
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    needs:
+      - checkov
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t devsecops-backend ./backend
+
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: devsecops-backend
+          format: sarif
+          output: trivy-results.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Upload Trivy Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-results.sarif
