@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Node
+**/node_modules
+**/dist
+**/.env
+
+# Logs
+*.log
+
+# Coverage
+coverage
+
+# IDE
+.vscode
+
+# Terraform
+**/.terraform
+**/*.tfstate
+**/*.tfstate.*
+
+# Docker
+**/.docker
+
+# Misc
+*.swp
