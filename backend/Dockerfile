@@ -8,6 +8,10 @@ RUN npm ci
 
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build TypeScript
 RUN npm run build
 
 EXPOSE 4000
