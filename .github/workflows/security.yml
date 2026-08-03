@@ -22,7 +22,6 @@ concurrency:
   
 
 jobs:
-  jobs:
   build:
     name: Build Backend
     runs-on: ubuntu-latest
