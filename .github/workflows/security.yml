@@ -134,23 +134,15 @@ jobs:
         run: |
           docker build -t devsecops-backend ./backend
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.66.0/trivy_0.66.0_Linux-64bit.deb
-          sudo dpkg -i trivy_0.66.0_Linux-64bit.deb
-
-      - name: Run Trivy
-        run: |
-          trivy image \
-            --scanners vuln \
-            --severity HIGH,CRITICAL \
-            --ignore-unfixed \
-            --exit-code 0 \
-            --format sarif \
-            --output trivy-results.sarif \
-            devsecops-backend
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: devsecops-backend
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          vuln-type: os,library
 
       - name: Upload Trivy Report
         if: always()
