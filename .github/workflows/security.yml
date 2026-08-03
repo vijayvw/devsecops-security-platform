@@ -11,15 +11,15 @@ on:
       - main
       - develop
 
+permissions:
+  contents: read
+
 jobs:
   secret-scan:
     name: Gitleaks Secret Scan
 
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      security-events: write
+  
 
     steps:
       - name: Checkout Repository
@@ -47,8 +47,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -71,9 +69,6 @@ jobs:
     name: OWASP Dependency-Check
 
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -98,8 +93,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -126,10 +119,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
 
     needs:
+      - secret-scan
+      - sast-scan
+      - dependency-check
       - checkov
 
     steps:
@@ -140,14 +134,23 @@ jobs:
         run: |
           docker build -t devsecops-backend ./backend
 
-      - name: Run Trivy Scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: devsecops-backend
-          format: sarif
-          output: trivy-results.sarif
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.66.0/trivy_0.66.0_Linux-64bit.deb
+          sudo dpkg -i trivy_0.66.0_Linux-64bit.deb
+
+      - name: Run Trivy
+        run: |
+          trivy image \
+            --scanners vuln \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 0 \
+            --format sarif \
+            --output trivy-results.sarif \
+            devsecops-backend
 
       - name: Upload Trivy Report
         if: always()
@@ -155,3 +158,4 @@ jobs:
         with:
           name: trivy-report
           path: trivy-results.sarif
+          if-no-files-found: ignore
