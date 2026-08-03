@@ -92,7 +92,7 @@ jobs:
           name: dependency-check-report
           path: reports/dependency-check-report.json
           if-no-files-found: ignore
-    checkov:
+  checkov:
     name: Checkov IaC Scan
 
     runs-on: ubuntu-latest
@@ -119,4 +119,4 @@ jobs:
         with:
           name: checkov-report
           path: checkov.sarif
-          if-no-files-found: ignore                          
+          if-no-files-found: ignore                            
