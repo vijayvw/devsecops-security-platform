@@ -1,0 +1,1 @@
+export { default as securityScanRoutes } from "./routes";

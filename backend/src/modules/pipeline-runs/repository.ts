@@ -9,24 +9,36 @@ export class PipelineRunRepository {
     return prisma.pipelineRun.create({
       data,
       include: {
-        pipeline: {
-          include: {
-            application: true,
-          },
-        },
-      },
+  pipeline: {
+    include: {
+      application: true,
+    },
+  },
+
+  scans: {
+    include: {
+      findings: true,
+    },
+  },
+},
     });
   }
 
   findAll() {
     return prisma.pipelineRun.findMany({
       include: {
-        pipeline: {
-          include: {
-            application: true,
-          },
-        },
-      },
+  pipeline: {
+    include: {
+      application: true,
+    },
+  },
+
+  scans: {
+    include: {
+      findings: true,
+    },
+  },
+},
       orderBy: {
         startedAt: "desc",
       },
@@ -34,37 +46,57 @@ export class PipelineRunRepository {
   }
 
   findById(id: string) {
-    return prisma.pipelineRun.findUnique({
-      where: { id },
-      include: {
-        pipeline: {
-          include: {
-            application: true,
-          },
+  return prisma.pipelineRun.findUnique({
+    where: { id },
+
+    include: {
+      pipeline: {
+        include: {
+          application: true,
         },
       },
-    });
-  }
+
+      scans: {
+        include: {
+          findings: true,
+        },
+
+        orderBy: {
+          startedAt: "asc",
+        },
+      },
+    },
+  });
+}
 
   update(id: string, data: UpdatePipelineRunDto) {
     return prisma.pipelineRun.update({
       where: { id },
       data,
       include: {
-        pipeline: {
-          include: {
-            application: true,
-          },
-        },
-      },
+  pipeline: {
+    include: {
+      application: true,
+    },
+  },
+
+  scans: {
+    include: {
+      findings: true,
+    },
+  },
+},
     });
   }
 
   findPipeline(id: string) {
-    return prisma.pipeline.findUnique({
-      where: {
-        id,
-      },
-    });
-  }
+  return prisma.pipeline.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      application: true,
+    },
+  });
+}
 }

@@ -1,0 +1,8 @@
+[
+  {
+    "Description": "Hardcoded AWS Access Key",
+    "Secret": "AKIA123456789",
+    "RuleID": "aws-access-token",
+    "File": "backend/src/config.ts"
+  }
+]

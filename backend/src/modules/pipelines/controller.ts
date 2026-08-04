@@ -1,80 +1,56 @@
 import { Request, Response } from "express";
+import { pipelinesService } from "./service";
+import {
+  createPipelineSchema,
+  updatePipelineSchema,
+} from "./validator";
 
-import { ApiResponse } from "../../utils/api-response";
-import { asyncHandler } from "../../utils/async-handler";
+export class PipelinesController {
+  async list(req: Request, res: Response) {
+    const data = await pipelinesService.getAll();
 
-import { PipelineService } from "./service";
+    res.json(data);
+  }
 
-export class PipelineController {
-  private readonly service = new PipelineService();
-
-  create = asyncHandler(async (req: Request, res: Response) => {
-    const pipeline = await this.service.create(req.body);
-
-    res.status(201).json(
-      ApiResponse.success(
-        "Pipeline created successfully",
-        pipeline,
-      ),
+  async get(req: Request, res: Response) {
+    const data = await pipelinesService.getById(
+      req.params.id
     );
-  });
 
-  findAll = asyncHandler(async (_req: Request, res: Response) => {
-    const pipelines = await this.service.findAll();
+    res.json(data);
+  }
 
-    res.json(
-      ApiResponse.success(
-        "Pipelines retrieved successfully",
-        pipelines,
-      ),
+  async create(req: Request, res: Response) {
+    const body = createPipelineSchema.parse(
+      req.body
     );
-  });
 
-  findById = asyncHandler(async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const pipeline =
+      await pipelinesService.create(body);
 
-    if (typeof id !== "string") {
-      throw new Error("Invalid pipeline id");
-    }
+    res.status(201).json(pipeline);
+  }
 
-    const pipeline = await this.service.findById(id);
-
-    res.json(
-      ApiResponse.success(
-        "Pipeline retrieved successfully",
-        pipeline,
-      ),
+  async update(req: Request, res: Response) {
+    const body = updatePipelineSchema.parse(
+      req.body
     );
-  });
 
-  update = asyncHandler(async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const pipeline =
+      await pipelinesService.update(
+        req.params.id,
+        body
+      );
 
-    if (typeof id !== "string") {
-      throw new Error("Invalid pipeline id");
-    }
+    res.json(pipeline);
+  }
 
-    const pipeline = await this.service.update(id, req.body);
+  async delete(req: Request, res: Response) {
+    await pipelinesService.delete(req.params.id);
 
-    res.json(
-      ApiResponse.success(
-        "Pipeline updated successfully",
-        pipeline,
-      ),
-    );
-  });
-
-  delete = asyncHandler(async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    if (typeof id !== "string") {
-      throw new Error("Invalid pipeline id");
-    }
-
-    await this.service.delete(id);
-
-    res.json(
-      ApiResponse.success("Pipeline deleted successfully"),
-    );
-  });
+    res.status(204).send();
+  }
 }
+
+export const pipelinesController =
+  new PipelinesController();

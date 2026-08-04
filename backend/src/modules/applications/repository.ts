@@ -14,12 +14,27 @@ export class ApplicationRepository {
   }
 
   findAll() {
-    return this.prisma.application.findMany({
-      orderBy: {
-        createdAt: "desc",
+  return this.prisma.application.findMany({
+    include: {
+      pipelines: {
+        include: {
+          runs: {
+            include: {
+              scans: {
+                include: {
+                  findings: true,
+                },
+              },
+            },
+          },
+        },
       },
-    });
-  }
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
 
   findById(id: string) {
     return this.prisma.application.findUnique({

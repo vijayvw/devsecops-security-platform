@@ -4,6 +4,7 @@ import { ApiResponse } from "../../utils/api-response";
 import { asyncHandler } from "../../utils/async-handler";
 
 import { ApplicationService } from "./service";
+import { applicationsService } from "./applications.service";
 
 
 export class ApplicationController {
@@ -67,6 +68,16 @@ export class ApplicationController {
       ),
     );
   });
+
+  async archived(req: Request, res: Response) {
+  const data = await applicationsService.getArchived();
+  res.json(data);
+}
+
+async restore(req: Request, res: Response) {
+  const app = await applicationsService.restore(req.params.id);
+  res.json(app);
+}
 
   delete = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;

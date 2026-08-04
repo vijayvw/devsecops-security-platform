@@ -1,72 +1,95 @@
-import { AppError } from "../../errors/app-error";
-import { PipelineRepository } from "./repository";
+import { pipelinesRepository } from "./repository";
 import {
   CreatePipelineDto,
   UpdatePipelineDto,
 } from "./types";
 
-export class PipelineService {
-  private readonly repository = new PipelineRepository();
+export class PipelinesService {
+  async getAll() {
+    const pipelines =
+      await pipelinesRepository.findAll();
 
-  async create(data: CreatePipelineDto) {
-    const application =
-      await this.repository.findApplication(
-        data.applicationId,
-      );
+    return pipelines.map((pipeline) => {
+      const runs = pipeline.runs ?? [];
 
-    if (!application) {
-      throw new AppError(
-        "Application not found",
-        404,
-      );
-    }
+      const totalRuns = runs.length;
 
-    const existing =
-      await this.repository.findByName(
-        data.applicationId,
-        data.name,
-      );
+      const successfulRuns = runs.filter(
+        (run) => run.status === "SUCCESS",
+      ).length;
 
-    if (existing) {
-      throw new AppError(
-        "Pipeline already exists for this application",
-        409,
-      );
-    }
+      const successRate =
+        totalRuns === 0
+          ? 0
+          : Math.round(
+              (successfulRuns / totalRuns) * 100,
+            );
 
-    return this.repository.create(data);
+      return {
+        ...pipeline,
+
+        totalRuns,
+
+        successRate,
+
+        latestRun: runs[0] ?? null,
+      };
+    });
   }
 
-  findAll() {
-    return this.repository.findAll();
-  }
-
-  async findById(id: string) {
+  async getById(id: string) {
     const pipeline =
-      await this.repository.findById(id);
+      await pipelinesRepository.findById(id);
 
     if (!pipeline) {
-      throw new AppError(
-        "Pipeline not found",
-        404,
-      );
+      throw new Error("Pipeline not found");
     }
 
-    return pipeline;
+    const runs = pipeline.runs ?? [];
+
+    const totalRuns = runs.length;
+
+    const successfulRuns = runs.filter(
+      (run) => run.status === "SUCCESS",
+    ).length;
+
+    const successRate =
+      totalRuns === 0
+        ? 0
+        : Math.round(
+            (successfulRuns / totalRuns) * 100,
+          );
+
+    return {
+      ...pipeline,
+
+      totalRuns,
+
+      successRate,
+
+      latestRun: runs[0] ?? null,
+    };
+  }
+
+  async create(data: CreatePipelineDto) {
+    return pipelinesRepository.create(data);
   }
 
   async update(
     id: string,
-    data: UpdatePipelineDto,
+    data: UpdatePipelineDto
   ) {
-    await this.findById(id);
+    await this.getById(id);
 
-    return this.repository.update(id, data);
+    return pipelinesRepository.update(id, data);
   }
 
   async delete(id: string) {
-    await this.findById(id);
+    await this.getById(id);
 
-    return this.repository.delete(id);
+    return pipelinesRepository.delete(id);
   }
 }
+
+export const pipelinesService =
+  new PipelinesService();

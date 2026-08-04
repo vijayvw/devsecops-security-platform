@@ -1,0 +1,1 @@
+export { findingsRoutes } from "./routes";

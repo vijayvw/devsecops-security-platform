@@ -45,4 +45,12 @@ export class ApplicationService {
 
     return this.repository.delete(id);
   }
+
+  async getArchived() {
+  return applicationsRepository.findArchived();
+}
+
+async restore(id: string) {
+  return applicationsRepository.restore(id);
+}
 }

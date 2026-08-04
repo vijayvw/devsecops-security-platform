@@ -1,14 +1,15 @@
-import { PipelineProvider } from "@prisma/client";
 import { z } from "zod";
 
 export const createPipelineSchema = z.object({
   applicationId: z.string().uuid(),
 
-  name: z.string().min(2).max(100),
+  name: z.string().min(2),
 
-  provider: z.nativeEnum(PipelineProvider),
+  provider: z.enum([
+    "GITHUB_ACTIONS",
+    "JENKINS",
+  ]),
 });
 
-export type CreatePipelineInput = z.infer<
-  typeof createPipelineSchema
->;
+export const updatePipelineSchema =
+  createPipelineSchema.partial();

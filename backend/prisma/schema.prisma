@@ -45,19 +45,60 @@ enum Severity {
 }
 
 model Application {
-  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name           String      @unique
-  repositoryUrl  String
-  defaultBranch  String      @default("main")
-  language       String
-  description    String?
+  id                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  pipelines      Pipeline[]
+  name              String      @unique
+  description       String?
 
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  repositoryUrl     String
+  defaultBranch     String      @default("main")
+  language          String
+
+  isPrivate         Boolean     @default(false)
+  repositoryOwner   String?
+  repositoryName    String?
+
+  webhookEnabled    Boolean     @default(false)
+  webhookSecret     String?
+
+  scanOnPush        Boolean     @default(true)
+  scanOnPullRequest Boolean     @default(true)
+  autoFixEnabled    Boolean     @default(false)
+
+  isArchived        Boolean     @default(false)
+
+  pipelines         Pipeline[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  scanSecrets       Boolean @default(true)
+  scanSast          Boolean @default(true)
+  scanDependencies  Boolean @default(true)
+  scanIac           Boolean @default(true)
+  scanContainers    Boolean @default(true)
 
   @@map("applications")
+  @@index([repositoryOwner])
+  @@index([repositoryName])
+  @@index([isArchived])
+}
+
+model GithubIntegration {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  username    String
+
+  token        String
+
+  isConnected Boolean @default(false)
+
+  lastChecked DateTime?
+
+  createdAt   DateTime @default(now())
+
+  updatedAt   DateTime @updatedAt
+
+  @@map("github_integrations")
 }
 
 model Pipeline {
@@ -80,29 +121,32 @@ model Pipeline {
 }
 
 model PipelineRun {
-  id             String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  pipelineId     String             @db.Uuid
-  pipeline       Pipeline           @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  pipelineId     String   @db.Uuid
+  pipeline       Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
 
   commitSha      String
-
   branch         String
 
   status         PipelineStatus
 
+  trigger        String?
+  triggeredBy    String?
+
+  startedAt      DateTime @default(now())
+  finishedAt     DateTime?
+
   duration       Int?
 
-  startedAt      DateTime           @default(now())
+  logs           String?
 
-  finishedAt     DateTime?
+  workflowRunId  String?
 
   scans          SecurityScan[]
 
-  createdAt      DateTime           @default(now())
+  createdAt      DateTime @default(now())
 
-  @@index([pipelineId])
-  @@index([status])
   @@map("pipeline_runs")
 }
 

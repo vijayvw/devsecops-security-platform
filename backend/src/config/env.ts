@@ -10,6 +10,8 @@ const envSchema = z.object({
   APP_NAME: z.string().default("DevSecOps Security Platform"),
 
   APP_VERSION: z.string().default("1.0.0"),
+  
+  GITHUB_WEBHOOK_SECRET: z.string(),
 });
 
 const parsed = envSchema.safeParse(process.env);

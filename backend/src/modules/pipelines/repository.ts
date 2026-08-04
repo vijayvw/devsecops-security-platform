@@ -1,78 +1,90 @@
-import { prisma } from "../../database";
+import { prisma } from "../../database/prisma";
 import {
   CreatePipelineDto,
   UpdatePipelineDto,
 } from "./types";
 
-export class PipelineRepository {
-  create(data: CreatePipelineDto) {
-    return prisma.pipeline.create({
-      data,
-      include: {
-        application: true,
-      },
-    });
-  }
-
-  findAll() {
+export class PipelinesRepository {
+  async findAll() {
     return prisma.pipeline.findMany({
       include: {
         application: true,
+
+        runs: {
+          orderBy: {
+            startedAt: "desc",
+          },
+        },
       },
+
       orderBy: {
         createdAt: "desc",
       },
     });
   }
 
-  findById(id: string) {
+  async findById(id: string) {
     return prisma.pipeline.findUnique({
       where: {
         id,
       },
+
       include: {
         application: true,
+
+        runs: {
+          orderBy: {
+            startedAt: "desc",
+          },
+        },
       },
     });
   }
 
-  update(id: string, data: UpdatePipelineDto) {
+  async create(data: CreatePipelineDto) {
+    return prisma.pipeline.create({
+      data,
+    });
+  }
+
+  async update(
+    id: string,
+    data: UpdatePipelineDto,
+  ) {
     return prisma.pipeline.update({
       where: {
         id,
       },
       data,
-      include: {
-        application: true,
-      },
     });
   }
+  
+  async findByRepositoryUrl(
+  repositoryUrl: string,
+) {
+  return prisma.pipeline.findFirst({
+    where: {
+      application: {
+        repositoryUrl,
+      },
+    },
 
-  delete(id: string) {
+    include: {
+      application: true,
+    },
+  });
+}
+
+  async delete(id: string) {
     return prisma.pipeline.delete({
       where: {
         id,
       },
     });
   }
-
-  findApplication(applicationId: string) {
-    return prisma.application.findUnique({
-      where: {
-        id: applicationId,
-      },
-    });
-  }
-
-  findByName(
-    applicationId: string,
-    name: string,
-  ) {
-    return prisma.pipeline.findFirst({
-      where: {
-        applicationId,
-        name,
-      },
-    });
-  }
 }
+
+  
+
+export const pipelinesRepository =
+  new PipelinesRepository();

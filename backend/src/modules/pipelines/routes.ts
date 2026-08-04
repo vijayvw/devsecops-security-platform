@@ -1,26 +1,26 @@
 import { Router } from "express";
-
-import { validate } from "../../middleware/validate";
-
-import { PipelineController } from "./controller";
-import { createPipelineSchema } from "./validator";
+import { pipelinesController } from "./controller";
 
 const router = Router();
 
-const controller = new PipelineController();
-
-router.post(
-  "/",
-  validate(createPipelineSchema),
-  controller.create,
+router.get("/", (req, res) =>
+  pipelinesController.list(req, res)
 );
 
-router.get("/", controller.findAll);
+router.get("/:id", (req, res) =>
+  pipelinesController.get(req, res)
+);
 
-router.get("/:id", controller.findById);
+router.post("/", (req, res) =>
+  pipelinesController.create(req, res)
+);
 
-router.patch("/:id", controller.update);
+router.put("/:id", (req, res) =>
+  pipelinesController.update(req, res)
+);
 
-router.delete("/:id", controller.delete);
+router.delete("/:id", (req, res) =>
+  pipelinesController.delete(req, res)
+);
 
 export default router;
