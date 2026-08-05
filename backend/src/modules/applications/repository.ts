@@ -14,27 +14,41 @@ export class ApplicationRepository {
   }
 
   findAll() {
-  return this.prisma.application.findMany({
-    include: {
-      pipelines: {
-        include: {
-          runs: {
-            include: {
-              scans: {
-                include: {
-                  findings: true,
+    return this.prisma.application.findMany({
+      where: {
+        isArchived: false,
+      },
+      include: {
+        pipelines: {
+          include: {
+            runs: {
+              include: {
+                scans: {
+                  include: {
+                    findings: true,
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-}
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
+
+  findArchived() {
+    return this.prisma.application.findMany({
+      where: {
+        isArchived: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }
 
   findById(id: string) {
     return this.prisma.application.findUnique({
@@ -44,7 +58,10 @@ export class ApplicationRepository {
     });
   }
 
-  update(id: string, data: UpdateApplicationDto) {
+  update(
+    id: string,
+    data: UpdateApplicationDto,
+  ) {
     return this.prisma.application.update({
       where: {
         id,
@@ -53,10 +70,24 @@ export class ApplicationRepository {
     });
   }
 
-  delete(id: string) {
-    return this.prisma.application.delete({
+  restore(id: string) {
+    return this.prisma.application.update({
       where: {
         id,
+      },
+      data: {
+        isArchived: false,
+      },
+    });
+  }
+
+  delete(id: string) {
+    return this.prisma.application.update({
+      where: {
+        id,
+      },
+      data: {
+        isArchived: true,
       },
     });
   }

@@ -74,19 +74,23 @@ export class GithubController {
   }
 
   async branches(
-    req: Request,
-    res: Response
-  ) {
-    const { owner, repo } = req.params;
+  req: Request,
+  res: Response
+) {
+  const { owner, repo } = req.params;
 
-    const branches =
-      await githubService.getBranches(
-        owner,
-        repo
-      );
-
-    res.json(branches);
+  if (typeof owner !== "string" || typeof repo !== "string") {
+    throw new Error("Invalid repository parameters");
   }
+
+  const branches =
+    await githubService.getBranches(
+      owner,
+      repo
+    );
+
+  res.json(branches);
+}
 
   async importRepository(
     req: Request,

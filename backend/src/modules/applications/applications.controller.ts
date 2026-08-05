@@ -17,7 +17,10 @@ export class ApplicationsController {
   }
 
   async get(req: Request, res: Response) {
-    const data = await applicationsService.getById(req.params.id);
+    const data = await applicationsService.getById(
+      String(req.params.id)
+    );
+
     res.json(data);
   }
 
@@ -29,11 +32,11 @@ export class ApplicationsController {
     res.status(201).json(app);
   }
 
-  async update(req: Request, res:Response) {
+  async update(req: Request, res: Response) {
     const body = updateApplicationSchema.parse(req.body);
 
     const app = await applicationsService.update(
-      req.params.id,
+      String(req.params.id),
       body
     );
 
@@ -41,12 +44,18 @@ export class ApplicationsController {
   }
 
   async restore(req: Request, res: Response) {
-    const app = await applicationsService.restore(req.params.id);
+    const app = await applicationsService.restore(
+      String(req.params.id)
+    );
+
     res.json(app);
   }
 
   async delete(req: Request, res: Response) {
-    await applicationsService.delete(req.params.id);
+    await applicationsService.delete(
+      String(req.params.id)
+    );
+
     res.status(204).send();
   }
 }

@@ -21,6 +21,10 @@ export class ApplicationService {
     return this.repository.findAll();
   }
 
+  async getAll() {
+    return this.findAll();
+  }
+
   async findById(id: string) {
     const application = await this.repository.findById(id);
 
@@ -29,6 +33,10 @@ export class ApplicationService {
     }
 
     return application;
+  }
+
+  async getById(id: string) {
+    return this.findById(id);
   }
 
   async update(
@@ -47,10 +55,13 @@ export class ApplicationService {
   }
 
   async getArchived() {
-  return applicationsRepository.findArchived();
+    return this.repository.findArchived();
+  }
+
+  async restore(id: string) {
+    return this.repository.restore(id);
+  }
 }
 
-async restore(id: string) {
-  return applicationsRepository.restore(id);
-}
-}
+export const applicationsService =
+  new ApplicationService();

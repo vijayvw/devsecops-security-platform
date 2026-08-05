@@ -3,8 +3,8 @@ export interface CreateApplicationDto {
   description?: string;
 
   repositoryUrl: string;
-  repositoryOwner?: string;
-  repositoryName?: string;
+  repositoryOwner?: string | null;
+  repositoryName?: string | null;
 
   defaultBranch: string;
   language: string;
@@ -12,7 +12,7 @@ export interface CreateApplicationDto {
   isPrivate?: boolean;
 
   webhookEnabled?: boolean;
-  webhookSecret?: string;
+  webhookSecret?: string | null;
 
   scanOnPush?: boolean;
   scanOnPullRequest?: boolean;

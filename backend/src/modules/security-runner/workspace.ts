@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
-const ROOT = path.join(process.cwd(), "workspace");
+const ROOT = "/workspace";
 
 export async function createWorkspace() {
   await fs.mkdir(ROOT, { recursive: true });

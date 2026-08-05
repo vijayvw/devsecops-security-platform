@@ -1,13 +1,12 @@
+import { execFile } from "child_process";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
-
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
+import { promisify } from "util";
 
 import { securityScanService } from "../../security-scans/service";
 
-const execFileAsync = promisify(execFile);
+const exec = promisify(execFile);
 
 export const gitleaksRunner = {
   async run(
@@ -20,22 +19,24 @@ export const gitleaksRunner = {
     );
 
     try {
-      try {
-        await execFileAsync("gitleaks", [
-          "detect",
-          "--source",
+      console.log("================================");
+      console.log("Running Gitleaks");
+      console.log("Repository:", repositoryPath);
+
+      await exec(
+        "gitleaks",
+        [
+          "git",
           repositoryPath,
           "--report-format",
           "json",
           "--report-path",
           reportPath,
-        ]);
-      } catch (error: any) {
-        // Exit code 1 means leaks were found.
-        if (error.code !== 1) {
-          throw error;
-        }
-      }
+        ],
+        {
+          maxBuffer: 1024 * 1024 * 100,
+        },
+      );
 
       const report = JSON.parse(
         await fs.readFile(reportPath, "utf8"),
@@ -45,6 +46,20 @@ export const gitleaksRunner = {
         scanId,
         report,
       );
+    } catch (err: any) {
+      // Exit code 1 = leaks found (expected)
+      if (err.code === 1) {
+        const report = JSON.parse(
+          await fs.readFile(reportPath, "utf8"),
+        );
+
+        return await securityScanService.importReport(
+          scanId,
+          report,
+        );
+      }
+
+      throw err;
     } finally {
       await fs.rm(reportPath, {
         force: true,

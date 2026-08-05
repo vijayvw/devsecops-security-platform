@@ -27,33 +27,30 @@ export async function getClusterMetrics() {
       apps.listDeploymentForAllNamespaces(),
     ]);
 
-    const readyNodes =
-      nodes.body.items.filter((node) =>
+    const readyNodes = nodes.items.filter(
+      (node: k8s.V1Node) =>
         node.status?.conditions?.some(
-          (condition) =>
+          (condition: k8s.V1NodeCondition) =>
             condition.type === "Ready" &&
-            condition.status === "True"
-        )
-      ).length;
+            condition.status === "True",
+        ),
+    ).length;
 
     return {
       status:
-        readyNodes === nodes.body.items.length
+        readyNodes === nodes.items.length
           ? "Healthy"
           : "Degraded",
 
-      nodes: nodes.body.items.length,
+      nodes: nodes.items.length,
 
-      pods: pods.body.items.length,
+      pods: pods.items.length,
 
-      deployments:
-        deployments.body.items.length,
+      deployments: deployments.items.length,
 
-      services:
-        services.body.items.length,
+      services: services.items.length,
 
-      namespaces:
-        namespaces.body.items.length,
+      namespaces: namespaces.items.length,
     };
   } catch (error) {
     console.error("Kubernetes:", error);

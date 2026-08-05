@@ -1,5 +1,6 @@
 import { pipelinesRepository } from "../pipelines/repository";
 import { pipelineRunService } from "../pipeline-runs/service";
+import { PipelineStatus } from "@prisma/client";
 
 export class WebhookService {
   async github(payload: any) {
@@ -42,11 +43,12 @@ export class WebhookService {
       payload.after ?? "unknown";
 
     const run =
-      await pipelineRunService.create({
-        pipelineId: pipeline.id,
-        branch,
-        commitSha,
-      });
+  await pipelineRunService.create({
+    pipelineId: pipeline.id,
+    branch,
+    commitSha,
+    status: PipelineStatus.PENDING,
+  });
 
     return {
       success: true,

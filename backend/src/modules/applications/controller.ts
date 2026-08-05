@@ -74,10 +74,22 @@ export class ApplicationController {
   res.json(data);
 }
 
-async restore(req: Request, res: Response) {
-  const app = await applicationsService.restore(req.params.id);
-  res.json(app);
-}
+restore = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (typeof id !== "string") {
+    throw new Error("Invalid application id");
+  }
+
+  const app = await applicationsService.restore(id);
+
+  res.json(
+    ApiResponse.success(
+      "Application restored successfully",
+      app,
+    ),
+  );
+});
 
   delete = asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;

@@ -4,6 +4,7 @@ import {
   Pie,
   Cell,
   Tooltip,
+  Legend,
   BarChart,
   Bar,
   XAxis,
@@ -18,10 +19,10 @@ interface Props {
 }
 
 const COLORS = [
-  "#dc2626",
-  "#ea580c",
-  "#f59e0b",
-  "#16a34a",
+  "#ef4444",
+  "#f97316",
+  "#facc15",
+  "#22c55e",
 ];
 
 export default function SecurityCharts({
@@ -65,64 +66,164 @@ export default function SecurityCharts({
   ];
 
   return (
-    <div className="mt-8 grid gap-6 lg:grid-cols-2">
-      <div className="rounded-xl border bg-white p-6 shadow">
-        <h2 className="mb-6 text-xl font-semibold">
-          Vulnerability Severity
-        </h2>
+    <div className="grid gap-6 lg:grid-cols-2">
+
+      {/* Severity */}
+
+      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/10">
+
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-white">
+            Vulnerability Distribution
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-400">
+            Security findings grouped by severity.
+          </p>
+        </div>
 
         <ResponsiveContainer
           width="100%"
-          height={320}
+          height={380}
         >
           <PieChart>
+
+  <text
+    x="50%"
+    y="46%"
+    textAnchor="middle"
+    fill="#ffffff"
+    fontSize="34"
+    fontWeight="bold"
+  >
+    {severityData.reduce(
+      (sum, item) => sum + item.value,
+      0
+    )}
+  </text>
+
+  <text
+    x="50%"
+    y="55%"
+    textAnchor="middle"
+    fill="#94a3b8"
+    fontSize="13"
+  >
+    Findings
+  </text>
+
             <Pie
+              isAnimationActive
+              animationDuration={1200}
               data={severityData}
               dataKey="value"
+              nameKey="name"
+              innerRadius={70}
               outerRadius={110}
-              label
+              paddingAngle={3}
+              labelLine={false}
+              label={({ name, percent }) =>
+                `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
+              }
             >
-              {severityData.map(
-                (_, index) => (
-                  <Cell
-                    key={index}
-                    fill={COLORS[index]}
-                  />
-                )
-              )}
+              {severityData.map((_, index) => (
+                <Cell
+                  key={index}
+                  fill={COLORS[index]}
+                />
+              ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+  background: "#020617",
+  border: "1px solid #475569",
+  borderRadius: 16,
+  color: "#fff",
+  boxShadow:
+    "0 20px 40px rgba(0,0,0,.45)",
+}}
+            />
+
+            <Legend
+  wrapperStyle={{
+    color: "#cbd5e1",
+    paddingTop: 20,
+  }}
+/>
+
           </PieChart>
         </ResponsiveContainer>
+
       </div>
 
-      <div className="rounded-xl border bg-white p-6 shadow">
-        <h2 className="mb-6 text-xl font-semibold">
-          Scan Results by Tool
-        </h2>
+      {/* Tool Results */}
+
+      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/10">
+
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-white">
+            Scanner Performance
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-400">
+            Passed vs failed scans for each tool.
+          </p>
+        </div>
 
         <ResponsiveContainer
           width="100%"
-          height={320}
+          height={340}
         >
-          <BarChart data={toolData}>
+          <BarChart
+            data={toolData}
+            barGap={8}
+          >
             <CartesianGrid
-              strokeDasharray="3 3"
+  stroke="#334155"
+  strokeDasharray="4 4"
+  opacity={0.35}
+/>
+
+            <XAxis
+              dataKey="tool"
+              stroke="#94a3b8"
             />
 
-            <XAxis dataKey="tool" />
+            <YAxis stroke="#94a3b8" />
 
-            <YAxis />
+            <Tooltip
+              contentStyle={{
+  background: "#020617",
+  border: "1px solid #475569",
+  borderRadius: 16,
+  color: "#fff",
+  boxShadow:
+    "0 20px 40px rgba(0,0,0,.45)",
+}}
+            />
 
-            <Tooltip />
+            <Legend />
 
-            <Bar dataKey="Passed" />
+            <Bar
+              dataKey="Passed"
+              fill="#22c55e"
+              radius={[8, 8, 0, 0]}
+              animationDuration={1200}
+            />
 
-            <Bar dataKey="Failed" />
+            <Bar
+              dataKey="Failed"
+              fill="#ef4444"
+              radius={[8, 8, 0, 0]}
+              animationDuration={1200}
+            />
+
           </BarChart>
         </ResponsiveContainer>
+
       </div>
+
     </div>
   );
 }

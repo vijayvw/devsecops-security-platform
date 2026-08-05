@@ -58,15 +58,24 @@ export const securityScanService = {
 
     const findings = parser.parse(report);
 
-    await securityScanRepository.createFindings(
-      scan.id,
-      findings,
-    );
+    console.log("================================");
+    console.log("IMPORT REPORT");
+    console.log("Tool:", scan.tool);
+    console.log("Findings:", findings.length);
 
     const status =
       findings.length > 0
         ? ScanStatus.FAILED
         : ScanStatus.PASSED;
+
+    console.log("Selected status:", status);
+
+    await securityScanRepository.createFindings(
+      scan.id,
+      findings,
+    );
+
+    console.log("Updating DB status:", status);
 
     await securityScanRepository.updateStatus(
       scan.id,
@@ -74,17 +83,14 @@ export const securityScanService = {
       scan.reportPath ?? undefined,
     );
 
+    console.log("================================");
+
     return securityScanRepository.findById(scan.id);
   },
 
   async getSummary() {
     return securityScanRepository.getSummary();
   },
-
-  // ===================================================
-  // NEW METHODS
-  // ===================================================
-
 
   async getReport(id: string) {
     const scan =

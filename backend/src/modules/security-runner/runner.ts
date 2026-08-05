@@ -1,3 +1,6 @@
+import fs from "fs/promises";
+import path from "path";
+
 import {
   createWorkspace,
   deleteWorkspace,
@@ -15,40 +18,71 @@ export async function runRepository(
   console.log("Pipeline:", pipelineRunId);
   console.log("Repository:", repositoryUrl);
 
-  const workspace =
-    await createWorkspace();
+  const workspace = await createWorkspace();
 
   console.log("Workspace:", workspace.path);
 
   try {
-    console.log("Cloning repository...");
+    console.log("STEP 1 - Cloning repository");
 
     await cloneRepository(
       repositoryUrl,
       workspace.path,
     );
 
-    console.log("Repository cloned.");
+    console.log("STEP 2 - Clone completed");
 
-    console.log("Starting security pipeline...");
+    console.log("================================");
+    console.log("VERIFYING WORKSPACE");
+
+    console.log("Workspace path:");
+    console.log(workspace.path);
+
+    const files = await fs.readdir(workspace.path);
+
+    console.log("Workspace files:");
+    console.log(files);
+
+    const gitExists = await fs
+      .access(path.join(workspace.path, ".git"))
+      .then(() => true)
+      .catch(() => false);
+
+    console.log(".git exists:", gitExists);
+
+    if (gitExists) {
+      const gitFiles = await fs.readdir(
+        path.join(workspace.path, ".git"),
+      );
+
+      console.log(".git contents:");
+      console.log(gitFiles);
+    }
+
+    console.log("================================");
+
+    console.log("STEP 3 - Executing security pipeline");
 
     await executePipeline(
       pipelineRunId,
       workspace.path,
     );
 
-    console.log("Security pipeline finished.");
+    console.log("STEP 4 - Pipeline finished");
 
     return {
       success: true,
     };
+  } catch (err) {
+    console.error("RUNNER FAILED");
+    console.error(err);
+
+    throw err;
   } finally {
-    console.log("Deleting workspace...");
+    console.log("STEP 5 - Cleaning workspace");
 
-    await deleteWorkspace(
-      workspace.path,
-    );
+    await deleteWorkspace(workspace.path);
 
-    console.log("Workspace deleted.");
+    console.log("Workspace deleted");
   }
 }

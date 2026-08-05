@@ -19,7 +19,7 @@ export class DashboardService {
       prisma.pipeline.count(),
       prisma.pipelineRun.count(),
       prisma.securityScan.count(),
-      prisma.securityFinding.count(),
+      prisma.finding.count(),
 
       prisma.securityScan.count({
         where: {
@@ -33,25 +33,25 @@ export class DashboardService {
         },
       }),
 
-      prisma.securityFinding.count({
+      prisma.finding.count({
         where: {
           severity: "CRITICAL",
         },
       }),
 
-      prisma.securityFinding.count({
+      prisma.finding.count({
         where: {
           severity: "HIGH",
         },
       }),
 
-      prisma.securityFinding.count({
+      prisma.finding.count({
         where: {
           severity: "MEDIUM",
         },
       }),
 
-      prisma.securityFinding.count({
+      prisma.finding.count({
         where: {
           severity: "LOW",
         },
