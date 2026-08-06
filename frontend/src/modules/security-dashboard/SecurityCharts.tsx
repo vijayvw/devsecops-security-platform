@@ -8,7 +8,7 @@ import {
   BarChart,
   Bar,
   XAxis,
-  YAxis,
+ YAxis,
   CartesianGrid,
 } from "recharts";
 
@@ -65,65 +65,74 @@ export default function SecurityCharts({
     },
   ];
 
+  const totalFindings = severityData.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
+
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
+    <div className="grid gap-8 xl:grid-cols-2">
 
-      {/* Severity */}
+      {/* ====================================================== */}
+      {/* Vulnerability Distribution */}
+      {/* ====================================================== */}
 
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/10">
+      <div className="rounded-3xl border border-slate-800 bg-slate-900 p-8 shadow-2xl transition-all duration-300 hover:border-blue-500 hover:shadow-blue-500/20">
 
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-white">
+        <div className="mb-8">
+
+          <h2 className="text-2xl font-bold text-white">
+
             Vulnerability Distribution
+
           </h2>
 
-          <p className="mt-1 text-sm text-slate-400">
-            Security findings grouped by severity.
+          <p className="mt-2 text-slate-400">
+
+            Current vulnerability breakdown across all repositories.
+
           </p>
+
         </div>
 
         <ResponsiveContainer
           width="100%"
-          height={380}
+          height={430}
         >
           <PieChart>
 
-  <text
-    x="50%"
-    y="46%"
-    textAnchor="middle"
-    fill="#ffffff"
-    fontSize="34"
-    fontWeight="bold"
-  >
-    {severityData.reduce(
-      (sum, item) => sum + item.value,
-      0
-    )}
-  </text>
+            <text
+              x="50%"
+              y="46%"
+              textAnchor="middle"
+              fill="#ffffff"
+              fontSize="46"
+              fontWeight="700"
+            >
+              {totalFindings}
+            </text>
 
-  <text
-    x="50%"
-    y="55%"
-    textAnchor="middle"
-    fill="#94a3b8"
-    fontSize="13"
-  >
-    Findings
-  </text>
+            <text
+              x="50%"
+              y="56%"
+              textAnchor="middle"
+              fill="#94a3b8"
+              fontSize="16"
+            >
+              Findings
+            </text>
 
             <Pie
-              isAnimationActive
-              animationDuration={1200}
               data={severityData}
               dataKey="value"
               nameKey="name"
-              innerRadius={70}
-              outerRadius={110}
-              paddingAngle={3}
+              innerRadius={90}
+              outerRadius={140}
+              paddingAngle={4}
+              animationDuration={1200}
               labelLine={false}
-              label={({ name, percent }) =>
-                `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
+              label={({ percent }) =>
+                `${((percent ?? 0) * 100).toFixed(0)}%`
               }
             >
               {severityData.map((_, index) => (
@@ -136,90 +145,121 @@ export default function SecurityCharts({
 
             <Tooltip
               contentStyle={{
-  background: "#020617",
-  border: "1px solid #475569",
-  borderRadius: 16,
-  color: "#fff",
-  boxShadow:
-    "0 20px 40px rgba(0,0,0,.45)",
-}}
+                background: "#0f172a",
+                border: "1px solid #334155",
+                borderRadius: 18,
+                color: "#fff",
+                padding: "12px",
+                boxShadow:
+                  "0 25px 50px rgba(0,0,0,.45)",
+              }}
             />
 
             <Legend
-  wrapperStyle={{
-    color: "#cbd5e1",
-    paddingTop: 20,
-  }}
-/>
+              wrapperStyle={{
+                color: "#CBD5E1",
+                paddingTop: 24,
+                fontSize: 14,
+              }}
+            />
 
           </PieChart>
+
         </ResponsiveContainer>
 
       </div>
 
-      {/* Tool Results */}
+      {/* ====================================================== */}
+      {/* Scanner Performance */}
+      {/* ====================================================== */}
 
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/10">
+      <div className="rounded-3xl border border-slate-800 bg-slate-900 p-8 shadow-2xl transition-all duration-300 hover:border-blue-500 hover:shadow-blue-500/20">
 
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-white">
+        <div className="mb-8">
+
+          <h2 className="text-2xl font-bold text-white">
+
             Scanner Performance
+
           </h2>
 
-          <p className="mt-1 text-sm text-slate-400">
-            Passed vs failed scans for each tool.
+          <p className="mt-2 text-slate-400">
+
+            Passed versus failed scans generated by security scanners.
+
           </p>
+
         </div>
 
         <ResponsiveContainer
           width="100%"
-          height={340}
+          height={430}
         >
           <BarChart
             data={toolData}
-            barGap={8}
+            barGap={16}
+            barCategoryGap="30%"
           >
+
             <CartesianGrid
-  stroke="#334155"
-  strokeDasharray="4 4"
-  opacity={0.35}
-/>
+              stroke="#334155"
+              strokeDasharray="4 4"
+              opacity={0.35}
+            />
 
             <XAxis
               dataKey="tool"
               stroke="#94a3b8"
+              tick={{
+                fill: "#cbd5e1",
+                fontSize: 13,
+              }}
             />
 
-            <YAxis stroke="#94a3b8" />
+            <YAxis
+              stroke="#94a3b8"
+              tick={{
+                fill: "#cbd5e1",
+                fontSize: 13,
+              }}
+            />
 
             <Tooltip
               contentStyle={{
-  background: "#020617",
-  border: "1px solid #475569",
-  borderRadius: 16,
-  color: "#fff",
-  boxShadow:
-    "0 20px 40px rgba(0,0,0,.45)",
-}}
+                background: "#0f172a",
+                border: "1px solid #334155",
+                borderRadius: 18,
+                color: "#fff",
+                padding: "12px",
+                boxShadow:
+                  "0 25px 50px rgba(0,0,0,.45)",
+              }}
             />
 
-            <Legend />
+            <Legend
+              wrapperStyle={{
+                color: "#CBD5E1",
+                paddingTop: 20,
+                fontSize: 14,
+              }}
+            />
 
             <Bar
               dataKey="Passed"
               fill="#22c55e"
-              radius={[8, 8, 0, 0]}
+              radius={[12, 12, 0, 0]}
               animationDuration={1200}
             />
 
             <Bar
               dataKey="Failed"
               fill="#ef4444"
-              radius={[8, 8, 0, 0]}
+              radius={[12, 12, 0, 0]}
               animationDuration={1200}
             />
 
           </BarChart>
+
         </ResponsiveContainer>
 
       </div>

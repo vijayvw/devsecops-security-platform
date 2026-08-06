@@ -1,7 +1,8 @@
 import OverviewCards from "../modules/security-dashboard/OverviewCards";
-import PipelineRunsTable from "../modules/pipeline-runs/PipelineRunsTable";
-import SecurityFindingsTable from "../modules/security-findings/SecurityFindingsTable";
+import LatestPipelineRuns from "../modules/dashboard/LatestPipelineRuns";
+import LatestSecurityFindings from "../modules/dashboard/LatestSecurityFindings";
 import ApplicationsGrid from "../modules/applications/ApplicationsGrid";
+
 
 export default function DashboardPage() {
   return (
@@ -77,20 +78,22 @@ export default function DashboardPage() {
 
 </div>
 
-{/* Middle */}
+      {/* Middle */}
 
-      <div className="grid gap-8 xl:grid-cols-2">
-        <PipelineRunsTable />
-        <SecurityFindingsTable />
-      </div>
+<div className="grid gap-8 xl:grid-cols-2">
 
-      {/* Bottom */}
+  <LatestPipelineRuns />
 
-      <ApplicationsGrid />
+  <LatestSecurityFindings />
+
+</div>
+
+      {/* Applications */}
+
+<ApplicationsGrid />
     </div>
   );
 }
-
 function LiveStatusCard({
   title,
   value,
@@ -104,11 +107,9 @@ function LiveStatusCard({
 }) {
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/10">
-
       <div className="flex items-center justify-between">
 
         <div>
-
           <div className="text-xs uppercase tracking-wider text-slate-500">
             {title}
           </div>
@@ -116,17 +117,15 @@ function LiveStatusCard({
           <div className="mt-3 text-2xl font-bold text-white">
             {value}
           </div>
-
         </div>
 
         <div
-            className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg text-2xl text-white ${color}`}
+          className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white ${color}`}
         >
           {icon}
         </div>
 
       </div>
-
     </div>
   );
 }

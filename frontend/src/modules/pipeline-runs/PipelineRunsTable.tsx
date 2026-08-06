@@ -107,7 +107,7 @@ export default function PipelineRunsTable() {
   };
     return (
     <>
-      <div className="space-y-6">
+      <div className="flex h-[calc(100vh-180px)] flex-col gap-6">
 
         {/* Summary */}
 
@@ -152,7 +152,7 @@ export default function PipelineRunsTable() {
 
         {/* Table */}
 
-        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
+        <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-xl">
 
           {/* Header */}
 
@@ -250,11 +250,11 @@ export default function PipelineRunsTable() {
 
           ) : (
 
-            <div className="overflow-x-auto">
+            <div className="flex-1 overflow-auto">
 
               <table className="w-full">
 
-                <thead className="bg-slate-950">
+                <thead className="sticky top-0 z-10 bg-slate-950">
 
                   <tr className="text-left text-sm uppercase tracking-wide text-slate-400">
 

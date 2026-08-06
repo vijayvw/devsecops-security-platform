@@ -24,7 +24,7 @@ export default function Drawer({
 
       {/* Drawer */}
 
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[800px] flex-col bg-white shadow-2xl">
+      <div className="fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-[1200px] flex-col bg-slate-50 shadow-2xl">
 
         {/* Sticky Header */}
 

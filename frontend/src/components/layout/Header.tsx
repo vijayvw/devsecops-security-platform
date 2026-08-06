@@ -1,9 +1,58 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  Menu,
+  Search,
+  Bell,
+  CheckCircle2,
+} from "lucide-react";
+
+const pageTitles: Record<
+  string,
+  { title: string; subtitle: string }
+> = {
+  "/": {
+    title: "Dashboard",
+    subtitle: "Security Operations Center",
+  },
+  "/applications": {
+    title: "Applications",
+    subtitle: "Manage repositories and services",
+  },
+  "/pipelines": {
+    title: "Pipelines",
+    subtitle: "CI/CD Pipeline Management",
+  },
+  "/pipeline-runs": {
+    title: "Pipeline Runs",
+    subtitle: "Live CI/CD Execution History",
+  },
+  "/security-scans": {
+    title: "Security Scans",
+    subtitle: "Infrastructure & Code Scanning",
+  },
+  "/findings": {
+    title: "Security Findings",
+    subtitle: "Detected Vulnerabilities",
+  },
+  "/reports": {
+    title: "Reports",
+    subtitle: "Platform Analytics",
+  },
+  "/infrastructure": {
+    title: "Infrastructure",
+    subtitle: "Clusters & Cloud Resources",
+  },
+  "/settings": {
+    title: "Settings",
+    subtitle: "Platform Configuration",
+  },
+};
 
 export default function Header() {
-  const [time, setTime] = useState(
-    new Date()
-  );
+  const [time, setTime] = useState(new Date());
+
+  const location = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -13,51 +62,72 @@ export default function Header() {
     return () => clearInterval(timer);
   }, []);
 
+  const page =
+    pageTitles[location.pathname] ??
+    pageTitles["/"];
+
   return (
-    <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/90 px-8 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
 
-      {/* Left */}
+      <div className="flex h-24 items-center gap-8 px-8">
 
-      <div>
+        {/* Left */}
 
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-600">
-          DevSecOps Platform
-        </p>
+        <div className="flex w-96 shrink-0 items-center gap-5">
 
-        <h1 className="mt-1 text-3xl font-bold text-slate-900">
-          Security Operations Center
-        </h1>
+          <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100">
 
-      </div>
+            <Menu size={22} />
 
-      {/* Center */}
+          </button>
 
-      <div className="hidden w-full max-w-xl px-10 xl:block">
+          <div>
 
-        <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 shadow-sm">
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+              {page.title}
+            </h1>
 
-          <span className="mr-3 text-lg">
-            🔍
-          </span>
+            <p className="mt-1 text-base text-slate-500">
+              {page.subtitle}
+            </p>
 
-          <input
-            placeholder="Search applications, pipelines, scans..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-          />
+          </div>
 
         </div>
 
-      </div>
+        {/* Search */}
 
-      {/* Right */}
+        <div className="hidden flex-1 xl:flex">
 
-      <div className="flex items-center gap-5">
+          <div className="flex w-full max-w-5xl items-center rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3 shadow-sm transition-all duration-300 focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-md">
 
-        <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3">
+            <Search
+              size={20}
+              className="mr-3 text-slate-400"
+            />
 
-          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search applications, repositories, pipelines, scans..."
+              className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+            />
 
-            <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+          </div>
+
+        </div>
+
+        {/* Right */}
+
+        <div className="ml-auto flex items-center gap-4">
+
+          {/* Health */}
+
+          <div className="flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2">
+
+            <CheckCircle2
+              size={18}
+              className="text-green-600"
+            />
 
             <span className="text-sm font-semibold text-green-700">
               Platform Healthy
@@ -65,42 +135,50 @@ export default function Header() {
 
           </div>
 
-        </div>
+          {/* Notification */}
 
-        <div className="rounded-2xl border bg-slate-50 px-4 py-3 text-center">
+          <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100">
 
-          <div className="text-xs uppercase tracking-wider text-slate-500">
-            Local Time
-          </div>
+            <Bell size={20} />
 
-          <div className="mt-1 font-semibold">
-            {time.toLocaleTimeString()}
-          </div>
+            <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-red-500" />
 
-        </div>
+          </button>
 
-        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl border bg-white transition hover:bg-slate-100">
+          {/* User */}
 
-          🔔
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
 
-          <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-red-500" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-base font-bold text-white">
 
-        </button>
+              V
 
-        <div className="flex items-center gap-3 rounded-2xl border bg-white px-4 py-2 shadow-sm">
-
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-lg font-bold text-white">
-            V
-          </div>
-
-          <div>
-
-            <div className="font-semibold">
-              Vijay
             </div>
 
-            <div className="text-xs text-slate-500">
-              Administrator
+            <div>
+
+              <div className="font-semibold text-slate-900">
+                Vijay VW
+              </div>
+
+              <div className="text-xs text-slate-500">
+                Platform Administrator
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Clock */}
+
+          <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-center 2xl:block">
+
+            <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+              Local Time
+            </div>
+
+            <div className="mt-1 text-sm font-semibold text-slate-900">
+              {time.toLocaleTimeString()}
             </div>
 
           </div>

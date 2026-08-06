@@ -101,92 +101,11 @@ export default function SecurityFindingsTable() {
     toolFilter,
   ]);
 
-  const stats = {
-    total: findings.length,
-
-    critical: findings.filter(
-      (f) => f.severity === "CRITICAL"
-    ).length,
-
-    high: findings.filter(
-      (f) => f.severity === "HIGH"
-    ).length,
-
-    medium: findings.filter(
-      (f) => f.severity === "MEDIUM"
-    ).length,
-
-    low: findings.filter(
-      (f) => f.severity === "LOW"
-    ).length,
-  };
-
   return (
     <>
-      <div className="space-y-8">
+      <div className="space-y-6">
 
-        {/* Hero */}
-
-        <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-8 text-white shadow-xl">
-
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-
-            <div>
-
-              <div className="flex items-center gap-4">
-
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-600 text-3xl shadow-lg">
-                  🛡️
-                </div>
-
-                <div>
-
-                  <h1 className="text-4xl font-bold">
-                    Security Findings
-                  </h1>
-
-                  <p className="mt-2 text-slate-300">
-                    Browse, investigate and remediate vulnerabilities detected
-                    across your DevSecOps platform.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-
-              <SummaryCard
-                title="Total Findings"
-                value={stats.total}
-                color="bg-slate-700"
-              />
-
-              <SummaryCard
-                title="Critical"
-                value={stats.critical}
-                color="bg-red-600"
-              />
-
-              <SummaryCard
-                title="High"
-                value={stats.high}
-                color="bg-orange-500"
-              />
-
-              <SummaryCard
-                title="Medium"
-                value={stats.medium}
-                color="bg-yellow-500"
-              />
-
-            </div>
-
-          </div>
-
-        </div>
+        
 
         {/* Filters */}
 
@@ -284,7 +203,7 @@ export default function SecurityFindingsTable() {
 
           <div className="rounded-3xl border border-dashed bg-white p-20 text-center">
 
-            <div className="text-6xl">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-5xl">
               ✅
             </div>
 
@@ -300,7 +219,8 @@ export default function SecurityFindingsTable() {
 
         ) : (
 
-          <div className="space-y-5">
+          <div className="flex-1 overflow-y-auto pr-2">
+  <div className="space-y-5">
 
             {filteredFindings.map((finding) => (
 
@@ -309,7 +229,7 @@ export default function SecurityFindingsTable() {
                 onClick={() =>
                   setSelectedFinding(finding)
                 }
-                className="cursor-pointer rounded-3xl border bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-xl"
+                className="group cursor-pointer rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-xl"
               >
 
                 <div className="flex items-start justify-between gap-6">
@@ -437,7 +357,7 @@ export default function SecurityFindingsTable() {
 
                     <div className="rounded-xl bg-blue-50 px-5 py-3 font-semibold text-blue-700 transition group-hover:bg-blue-100">
 
-                      Inspect Finding →
+                      View Details →
 
                     </div>
 
@@ -450,8 +370,9 @@ export default function SecurityFindingsTable() {
             ))}
 
           </div>
+</div>
 
-        )}
+)}
 
       </div>
 
@@ -469,7 +390,7 @@ export default function SecurityFindingsTable() {
 
         {selectedFinding && (
 
-          <div className="space-y-8">
+          <div className="flex h-full flex-col space-y-6">
 
             {/* Header */}
 
@@ -521,7 +442,7 @@ export default function SecurityFindingsTable() {
 
                   </div>
 
-                  <h2 className="mt-5 text-3xl font-bold">
+                  <h2 className="mt-4 text-3xl font-bold leading-tight">
 
                     {selectedFinding.title}
 
@@ -614,7 +535,7 @@ export default function SecurityFindingsTable() {
 
             {selectedFinding.recommendation && (
 
-              <div className="rounded-2xl border border-green-300 bg-green-50 p-6">
+              <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6">
 
                 <h3 className="font-semibold text-green-700">
                   💡 Recommendation
@@ -696,43 +617,6 @@ export default function SecurityFindingsTable() {
   );
 }
 
-function SummaryCard({
-  title,
-  value,
-  color,
-}: {
-  title: string;
-  value: number;
-  color: string;
-}) {
-  return (
-
-    <div className="rounded-2xl bg-slate-800 p-5">
-
-      <div className="flex items-center justify-between">
-
-        <div>
-
-          <div className="text-xs uppercase tracking-wider text-slate-400">
-            {title}
-          </div>
-
-          <div className="mt-3 text-3xl font-bold text-white">
-            {value}
-          </div>
-
-        </div>
-
-        <div
-          className={`h-4 w-4 rounded-full ${color}`}
-        />
-
-      </div>
-
-    </div>
-
-  );
-}
 
 function InfoCard({
   label,

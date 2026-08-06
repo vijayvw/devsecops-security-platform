@@ -1,77 +1,109 @@
 import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Boxes,
+  GitBranch,
+  PlayCircle,
+  Shield,
+  FileSearch,
+  BarChart3,
+  Cloud,
+  Settings,
+  ShieldCheck,
+} from "lucide-react";
 
 const items = [
   {
-    to: "/",
-    title: "Dashboard",
-    icon: "📊",
+    heading: "GENERAL",
+    links: [
+      {
+        to: "/",
+        title: "Dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        to: "/applications",
+        title: "Applications",
+        icon: Boxes,
+      },
+    ],
   },
   {
-    to: "/applications",
-    title: "Applications",
-    icon: "📦",
+    heading: "DEVSECOPS",
+    links: [
+      {
+        to: "/pipelines",
+        title: "Pipelines",
+        icon: GitBranch,
+      },
+      {
+        to: "/pipeline-runs",
+        title: "Pipeline Runs",
+        icon: PlayCircle,
+      },
+      {
+        to: "/security-scans",
+        title: "Security Scans",
+        icon: Shield,
+      },
+      {
+        to: "/findings",
+        title: "Findings",
+        icon: FileSearch,
+      },
+    ],
   },
   {
-    to: "/pipelines",
-    title: "Pipelines",
-    icon: "🚀",
+    heading: "ANALYTICS",
+    links: [
+      {
+        to: "/reports",
+        title: "Reports",
+        icon: BarChart3,
+      },
+      {
+        to: "/infrastructure",
+        title: "Infrastructure",
+        icon: Cloud,
+      },
+    ],
   },
   {
-    to: "/pipeline-runs",
-    title: "Pipeline Runs",
-    icon: "🏃",
-  },
-  {
-    to: "/security-scans",
-    title: "Security Scans",
-    icon: "🔍",
-  },
-  {
-    to: "/findings",
-    title: "Findings",
-    icon: "🛡️",
-  },
-  {
-    to: "/reports",
-    title: "Reports",
-    icon: "📈",
-  },
-  {
-    to: "/infrastructure",
-    title: "Infrastructure",
-    icon: "☁️",
-  },
-  {
-    to: "/settings",
-    title: "Settings",
-    icon: "⚙️",
+    heading: "SYSTEM",
+    links: [
+      {
+        to: "/settings",
+        title: "Settings",
+        icon: Settings,
+      },
+    ],
   },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="flex h-screen w-72 flex-col border-r border-slate-800 bg-slate-950 text-white">
+    <aside className="fixed left-0 top-0 z-50 flex h-screen w-[420px] flex-col border-r border-slate-800 bg-[#060b17] text-white">
 
       {/* Brand */}
 
-      <div className="border-b border-slate-800 p-7">
+      <div className="border-b border-slate-800 px-8 py-8">
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-cyan-500 text-3xl shadow-lg">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 shadow-xl">
 
-            ☸️
+            <ShieldCheck size={34} />
 
           </div>
 
           <div>
 
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-[34px] font-bold tracking-tight">
               DevSecOps
             </h1>
 
-            <p className="mt-1 text-sm text-slate-400">
-              Security Platform
+            <p className="mt-1 text-base text-slate-400">
+              Cloud Security Platform
             </p>
 
           </div>
@@ -80,22 +112,22 @@ export default function Sidebar() {
 
       </div>
 
-      {/* Status */}
+      {/* Platform Status */}
 
-      <div className="px-5 pt-6">
+      <div className="px-6 pt-8">
 
-        <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4">
+        <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-5">
 
-          <div className="text-xs uppercase tracking-wider text-green-400">
+          <div className="text-xs uppercase tracking-[0.25em] text-green-400">
             Platform Status
           </div>
 
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-4 flex items-center gap-3">
 
             <span className="h-3 w-3 animate-pulse rounded-full bg-green-500" />
 
-            <span className="font-semibold text-green-300">
-              Healthy
+            <span className="text-[15px] font-medium text-green-300">
+              All Systems Operational
             </span>
 
           </div>
@@ -106,61 +138,70 @@ export default function Sidebar() {
 
       {/* Navigation */}
 
-      <nav className="mt-8 flex-1 px-4">
+      <nav className="mt-10 flex-1 overflow-y-auto px-5">
 
-        {items.map((item) => (
+        {items.map((section) => (
+          <div key={section.heading} className="mb-8">
 
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              `group mb-2 flex items-center gap-4 rounded-2xl px-4 py-3 transition-all duration-300 ${
-                isActive
-                  ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
-              }`
-            }
-          >
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl">
-
-              {item.icon}
-
+            <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+              {section.heading}
             </div>
 
-            <span className="font-medium">
+            {section.links.map((item) => {
+              const Icon = item.icon;
 
-              {item.title}
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `mb-3 flex items-center gap-5 rounded-2xl px-5 py-4 transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-xl"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white hover:translate-x-1"
+                    }`
+                  }
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
 
-            </span>
+                    <Icon size={21} strokeWidth={2} />
 
-          </NavLink>
+                  </div>
 
+                  <span className="text-[15px] font-medium tracking-wide">
+                    {item.title}
+                  </span>
+
+                </NavLink>
+              );
+            })}
+
+          </div>
         ))}
 
       </nav>
 
       {/* Footer */}
 
-      <div className="border-t border-slate-800 p-5">
+      <div className="border-t border-slate-800 p-6">
 
-        <div className="rounded-2xl bg-slate-900 p-4">
+        <div className="rounded-2xl bg-slate-900 p-5 transition hover:bg-slate-800">
 
           <div className="flex items-center gap-4">
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-xl font-bold">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 text-lg font-bold">
 
               V
 
             </div>
 
-            <div>
+            <div className="min-w-0">
 
-              <div className="font-semibold">
+              <div className="truncate text-base font-semibold">
                 Vijay VW
               </div>
 
-              <div className="text-sm text-slate-400">
+              <div className="truncate text-sm text-slate-400">
                 Platform Administrator
               </div>
 

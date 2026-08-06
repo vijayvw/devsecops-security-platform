@@ -13,8 +13,7 @@ export default function GitHubIntegrationCard() {
   const [username, setUsername] = useState("");
   const [token, setToken] = useState("");
 
-  const [connected, setConnected] =
-    useState(false);
+  const [connected, setConnected] = useState(false);
 
   const [repositories, setRepositories] =
     useState<GithubRepository[]>([]);
@@ -22,8 +21,7 @@ export default function GitHubIntegrationCard() {
   const [branches, setBranches] =
     useState<GithubBranch[]>([]);
 
-  const [selectedRepo, setSelectedRepo] =
-    useState("");
+  const [selectedRepo, setSelectedRepo] = useState("");
 
   const [selectedBranch, setSelectedBranch] =
     useState("");
@@ -63,10 +61,7 @@ export default function GitHubIntegrationCard() {
     try {
       setConnecting(true);
 
-      await githubApi.connect(
-        username,
-        token
-      );
+      await githubApi.connect(username, token);
 
       setConnected(true);
 
@@ -108,10 +103,7 @@ export default function GitHubIntegrationCard() {
       fullName.split("/");
 
     const data =
-      await githubApi.getBranches(
-        owner,
-        repo
-      );
+      await githubApi.getBranches(owner, repo);
 
     setBranches(data);
   }
@@ -181,11 +173,7 @@ export default function GitHubIntegrationCard() {
 
             <StatusCard
               title="GitHub"
-              value={
-                connected
-                  ? "Connected"
-                  : "Offline"
-              }
+              value={connected ? "Connected" : "Offline"}
               icon="🐙"
               color={
                 connected
@@ -207,8 +195,7 @@ export default function GitHubIntegrationCard() {
 
       </div>
 
-      <div className="grid gap-8 xl:grid-cols-3"> 
-                {/* GitHub Connection */}
+      <div className="grid gap-8 xl:grid-cols-3">
 
         <div className="xl:col-span-2 rounded-3xl border bg-white p-8 shadow-sm">
 
@@ -307,11 +294,7 @@ export default function GitHubIntegrationCard() {
 
             <InfoBox
               label="Status"
-              value={
-                connected
-                  ? "Connected"
-                  : "Offline"
-              }
+              value={connected ? "Connected" : "Offline"}
             />
 
             <InfoBox
@@ -332,8 +315,6 @@ export default function GitHubIntegrationCard() {
           </div>
 
         </div>
-
-        {/* Quick Configuration */}
 
         <div className="rounded-3xl border bg-white p-8 shadow-sm">
 
@@ -382,8 +363,7 @@ export default function GitHubIntegrationCard() {
         </div>
 
       </div>
-
-      {/* Repository Import */}
+            {/* Repository Import */}
 
       <div className="rounded-3xl border bg-white p-8 shadow-sm">
 
@@ -398,7 +378,8 @@ export default function GitHubIntegrationCard() {
           </p>
 
         </div>
-                {!connected ? (
+
+        {!connected ? (
 
           <div className="rounded-2xl border border-dashed p-16 text-center">
 
@@ -516,16 +497,12 @@ export default function GitHubIntegrationCard() {
 
                 <InfoRow
                   label="Selected Repository"
-                  value={
-                    selectedRepo || "-"
-                  }
+                  value={selectedRepo || "-"}
                 />
 
                 <InfoRow
                   label="Selected Branch"
-                  value={
-                    selectedBranch || "-"
-                  }
+                  value={selectedBranch || "-"}
                 />
 
                 <InfoRow
@@ -561,7 +538,6 @@ export default function GitHubIntegrationCard() {
     </div>
   );
 }
-
 function StatusCard({
   title,
   value,
@@ -645,7 +621,6 @@ function InfoRow({
     </div>
   );
 }
-
 function SettingToggle({
   title,
   description,

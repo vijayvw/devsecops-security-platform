@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
+import {
+  ShieldCheck,
+  CheckCircle2,
+  XCircle,
+  LoaderCircle,
+  ShieldAlert,
+  AlertTriangle,
+  CircleDot,
+  TrendingUp,
+} from "lucide-react";
+
 import SecurityCharts from "./SecurityCharts";
+
 import {
   securityApi,
   type SecuritySummary,
@@ -33,8 +45,17 @@ export default function OverviewCards() {
 
   if (!summary) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-12 text-center text-slate-400">
-        Loading security dashboard...
+      <div className="rounded-3xl border border-slate-800 bg-slate-900 p-16 text-center">
+
+        <LoaderCircle
+          size={42}
+          className="mx-auto animate-spin text-blue-500"
+        />
+
+        <p className="mt-6 text-lg text-slate-400">
+          Loading security dashboard...
+        </p>
+
       </div>
     );
   }
@@ -57,116 +78,216 @@ export default function OverviewCards() {
     )
   );
 
+  const securityLevel =
+    score >= 90
+      ? "Excellent"
+      : score >= 75
+      ? "Good"
+      : score >= 50
+      ? "Moderate"
+      : "Critical";
+
   return (
     <div className="space-y-8">
-      <div className="grid gap-6 lg:grid-cols-12">
 
-        {/* Security Score */}
+      {/* ===================================================== */}
+      {/* Security Overview */}
+      {/* ===================================================== */}
 
-        <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-white shadow-xl lg:col-span-4">
-          <p className="text-sm uppercase tracking-widest text-blue-100">
-            Security Score
-          </p>
+      <div className="grid gap-6 xl:grid-cols-12">
 
-          <h2 className="mt-4 text-6xl font-black">
-            {score}%
-          </h2>
+        {/* Score */}
 
-          <div className="mt-6 h-3 overflow-hidden rounded-full bg-white/20">
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 p-8 text-white shadow-2xl xl:col-span-4">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p className="text-sm uppercase tracking-[0.3em] text-blue-100">
+
+                Security Score
+
+              </p>
+
+              <h2 className="mt-4 text-7xl font-black">
+
+                {score}%
+
+              </h2>
+
+            </div>
+
+            <ShieldCheck size={70} />
+
+          </div>
+
+          <div className="mt-8 h-4 overflow-hidden rounded-full bg-white/20">
+
             <div
-              className="h-full rounded-full bg-white transition-all duration-700"
+              className="h-full rounded-full bg-white transition-all duration-1000"
               style={{
                 width: `${score}%`,
               }}
             />
+
           </div>
 
-          <p className="mt-4 text-blue-100">
-            Overall platform health based on
-            recent scan results.
-          </p>
+          <div className="mt-6 flex items-center justify-between">
+
+            <div>
+
+              <div className="text-2xl font-bold">
+
+                {securityLevel}
+
+              </div>
+
+              <div className="text-sm text-blue-100">
+
+                Overall platform security posture
+
+              </div>
+
+            </div>
+
+            <div className="rounded-2xl bg-white/10 px-4 py-3 text-right backdrop-blur">
+
+              <div className="text-xs uppercase tracking-widest text-blue-100">
+
+                Updated
+
+              </div>
+
+              <div className="mt-1 font-semibold">
+
+                Live
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        {/* Statistics */}
+        {/* Metrics */}
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:col-span-8 xl:grid-cols-4">
 
           <MetricCard
-            icon="🛡️"
-            title="Scans"
+            title="Security Scans"
             value={summary.totalScans}
-            color="border-blue-500"
+            subtitle="+12 Today"
+            color="blue"
+            icon={
+              <ShieldCheck size={28} />
+            }
           />
 
           <MetricCard
-            icon="✅"
             title="Passed"
             value={summary.passed}
-            color="border-green-500"
+            subtitle="Healthy"
+            color="green"
+            icon={
+              <CheckCircle2 size={28} />
+            }
           />
 
           <MetricCard
-            icon="❌"
             title="Failed"
             value={summary.failed}
-            color="border-red-500"
+            subtitle="Needs Review"
+            color="red"
+            icon={
+              <XCircle size={28} />
+            }
           />
 
           <MetricCard
-            icon="🏃"
             title="Running"
             value={summary.running}
-            color="border-cyan-500"
+            subtitle="Live"
+            color="cyan"
+            icon={
+              <LoaderCircle size={28} />
+            }
           />
 
         </div>
 
       </div>
 
-      {/* Findings */}
+      {/* ===================================================== */}
+      {/* Severity */}
+      {/* ===================================================== */}
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
         <SeverityCard
           title="Critical"
           value={summary.findings.critical}
-          color="bg-red-600"
-          icon="🚨"
+          subtitle="Immediate Action"
+          color="red"
+          icon={
+            <ShieldAlert size={30} />
+          }
         />
 
         <SeverityCard
           title="High"
           value={summary.findings.high}
-          color="bg-orange-500"
-          icon="⚠️"
+          subtitle="High Priority"
+          color="orange"
+          icon={
+            <AlertTriangle size={30} />
+          }
         />
 
         <SeverityCard
           title="Medium"
           value={summary.findings.medium}
-          color="bg-yellow-500"
-          icon="🟡"
+          subtitle="Needs Review"
+          color="yellow"
+          icon={
+            <TrendingUp size={30} />
+          }
         />
 
         <SeverityCard
           title="Low"
           value={summary.findings.low}
-          color="bg-green-500"
-          icon="🟢"
+          subtitle="Monitor"
+          color="green"
+          icon={
+            <CircleDot size={30} />
+          }
         />
 
       </div>
 
-      {/* Summary */}
+      {/* ===================================================== */}
+      {/* Summary + Charts */}
+      {/* ===================================================== */}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2">
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <h3 className="mb-6 text-xl font-bold text-white">
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-7 shadow-xl">
+
+          <h3 className="text-2xl font-bold text-white">
+
             Platform Summary
+
           </h3>
 
-          <div className="space-y-4">
+          <p className="mt-2 text-slate-400">
+
+            Live overview of current security posture.
+
+          </p>
+
+          <div className="mt-8 space-y-4">
 
             <Row
               label="Pending Scans"
@@ -189,43 +310,64 @@ export default function OverviewCards() {
             />
 
           </div>
+
         </div>
 
         <SecurityCharts summary={summary} />
 
       </div>
+
     </div>
   );
-}
-
-function MetricCard({
+}function MetricCard({
   title,
   value,
+  subtitle,
   color,
   icon,
 }: {
   title: string;
   value: number;
-  color: string;
-  icon: string;
+  subtitle: string;
+  color: "blue" | "green" | "red" | "cyan";
+  icon: React.ReactNode;
 }) {
-  return (
-    <div
-      className={`rounded-2xl border-l-4 ${color} border border-slate-800 bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl`}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-3xl">{icon}</span>
+  const colors = {
+    blue: "bg-blue-600",
+    green: "bg-green-600",
+    red: "bg-red-600",
+    cyan: "bg-cyan-600",
+  };
 
-        <div className="text-right">
-          <div className="text-3xl font-bold text-white">
+  return (
+    <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/20">
+
+      <div className="flex items-start justify-between">
+
+        <div>
+
+          <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
+            {title}
+          </div>
+
+          <div className="mt-4 text-4xl font-bold text-white">
             {value}
           </div>
 
-          <div className="text-sm text-slate-400">
-            {title}
+          <div className="mt-2 text-sm text-slate-400">
+            {subtitle}
           </div>
+
         </div>
+
+        <div
+          className={`flex h-14 w-14 items-center justify-center rounded-2xl text-white ${colors[color]}`}
+        >
+          {icon}
+        </div>
+
       </div>
+
     </div>
   );
 }
@@ -233,36 +375,52 @@ function MetricCard({
 function SeverityCard({
   title,
   value,
+  subtitle,
   color,
   icon,
 }: {
   title: string;
   value: number;
-  color: string;
-  icon: string;
+  subtitle: string;
+  color: "red" | "orange" | "yellow" | "green";
+  icon: React.ReactNode;
 }) {
+  const colors = {
+    red: "bg-red-600",
+    orange: "bg-orange-500",
+    yellow: "bg-yellow-500",
+    green: "bg-green-600",
+  };
+
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition hover:-translate-y-1 hover:shadow-xl">
+    <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-blue-500/20">
 
       <div className="flex items-center justify-between">
 
         <div>
-          <div className="text-sm text-slate-400">
+
+          <div className="text-sm uppercase tracking-wider text-slate-400">
             {title}
           </div>
 
-          <div className="mt-2 text-4xl font-bold text-white">
+          <div className="mt-3 text-5xl font-black text-white">
             {value}
           </div>
+
+          <div className="mt-2 text-sm text-slate-500">
+            {subtitle}
+          </div>
+
         </div>
 
         <div
-          className={`flex h-14 w-14 items-center justify-center rounded-xl ${color} text-2xl`}
+          className={`flex h-16 w-16 items-center justify-center rounded-2xl text-white ${colors[color]}`}
         >
           {icon}
         </div>
 
       </div>
+
     </div>
   );
 }
@@ -275,14 +433,20 @@ function Row({
   value: number;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-slate-800 px-4 py-3">
-      <span className="text-slate-400">
-        {label}
-      </span>
+    <div className="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-800 px-5 py-4 transition hover:bg-slate-700">
 
-      <span className="text-lg font-bold text-white">
+      <div>
+
+        <div className="text-sm text-slate-400">
+          {label}
+        </div>
+
+      </div>
+
+      <div className="text-2xl font-bold text-white">
         {value}
-      </span>
+      </div>
+
     </div>
   );
 }

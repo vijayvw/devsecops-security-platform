@@ -10,14 +10,16 @@ export default function Layout({
   children,
 }: LayoutProps) {
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100">
       <Sidebar />
 
-      <div className="flex flex-1 flex-col">
+      <div className="ml-[420px] flex min-h-screen flex-col">
         <Header />
 
-        <main className="flex-1 p-8 overflow-auto">
-          {children}
+        <main className="flex-1 overflow-x-hidden pt-24">
+          <div className="w-full px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>
